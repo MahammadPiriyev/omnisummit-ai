@@ -29,6 +29,22 @@ Restart the development server after changing environment variables.
 
 ## Partner configuration
 
+### Gemini
+
+Gemini-yə keçmək üçün bütün dəyişənləri eyni `.env` faylında saxlayın:
+
+```dotenv
+VOICECLAIM_LLM_PROVIDER=gemini
+GEMINI_API_KEY=
+VOICECLAIM_FAST_MODEL=gemini-3.5-flash
+VOICECLAIM_SYNTHESIS_MODEL=gemini-3.5-flash
+VOICECLAIM_EMBEDDING_MODEL=gemini-embedding-001
+```
+
+`GEMINI_API_KEY` qarşısına öz açarınızı yazın və development serveri yenidən başladın. Gemini fakt çıxarışı, araşdırma sorğuları, sübut təhlili, yekun cavab və 512 ölçülü mətn vektorları üçün istifadə olunur. Azərbaycan dili, JSON/Zod və dəqiq sitat yoxlamaları saxlanılır. Bu rejimdə Ollama işləməli deyil. Aktiv sessiyalarda əvvəlki modelin vektorlarını yeni modelin vektorları ilə qarışdırmamaq üçün yeni sessiya başladın.
+
+İnteqrasiya [Google-un rəsmi uyğunluq API-si](https://ai.google.dev/gemini-api/docs/openai) və [embedding API-si](https://ai.google.dev/gemini-api/docs/embeddings) ilə işləyir. İstəyə görə `GEMINI_BASE_URL` dəyişəni əlavə edilə bilər; standart `https://generativelanguage.googleapis.com/v1beta` ünvanıdır.
+
 ### Free local LLM (Ollama)
 
 To avoid AI/ML API billing, run a real local model on your own computer. This replaces the LLM for claim extraction, research reasoning, synthesis, and custom-source embeddings. Speechmatics transcription and Bright Data research still use their configured accounts; this option does not make those services free.

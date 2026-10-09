@@ -1,10 +1,11 @@
 import "@tanstack/react-start/server-only";
 import { z } from "zod";
 import { requireIntegration } from "./config.server";
-import { classifyAimlResponse, ProviderError } from "./errors.server";
+import { classifyAimlResponse, classifyGeminiResponse, ProviderError } from "./errors.server";
 import { retry, withDeadline } from "./retry.server";
 import { logProviderStage } from "./logging.server";
 import { ollamaCompletion, ollamaEmbeddings } from "./ollama.server";
+import { geminiEmbeddings } from "./gemini.server";
 
 interface JsonSchemaFormat {
   name: string;
@@ -29,22 +30,33 @@ export async function structuredCompletion<T>(options: {
   };
   const config = requireIntegration("aiml");
   if (config.llmProvider === "ollama") return ollamaCompletion(options);
-  if (!config.aimlApiKey)
-    throw new ProviderError("aiml", "AIML_NOT_CONFIGURED", "AI/ML API ayarları tamamlanmayıb.");
+  const provider = config.llmProvider === "gemini" ? "gemini" : "aiml";
+  const apiKey = provider === "gemini" ? config.geminiApiKey : config.aimlApiKey;
+  const baseUrl =
+    provider === "gemini"
+      ? `${config.geminiBaseUrl.replace(/\/$/, "")}/openai`
+      : config.aimlBaseUrl;
+  if (!apiKey)
+    throw new ProviderError(
+      provider,
+      `${provider.toUpperCase()}_NOT_CONFIGURED`,
+      "Model xidmətinin ayarları tamamlanmayıb.",
+    );
 
+  let invalidOutputs = 0;
   return retry(
-    async (attempt) => {
+    async () => {
       const started = Date.now();
       const repair =
-        attempt > 1
+        invalidOutputs > 0
           ? "\nYour previous output was invalid. Return only JSON matching the schema exactly."
           : "";
       const response = await withDeadline(
         (signal) =>
-          fetch(`${config.aimlBaseUrl}/chat/completions`, {
+          fetch(`${baseUrl}/chat/completions`, {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${config.aimlApiKey}`,
+              Authorization: `Bearer ${apiKey}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -65,13 +77,16 @@ export async function structuredCompletion<T>(options: {
             }),
             signal,
           }),
-        35_000,
+        provider === "gemini" ? 60_000 : 35_000,
         options.signal,
       );
       if (!response.ok) {
-        const error = await classifyAimlResponse(response);
+        const error =
+          provider === "gemini"
+            ? classifyGeminiResponse(response)
+            : await classifyAimlResponse(response);
         logProviderStage({
-          provider: "aiml",
+          provider,
           stage: "structured_completion",
           durationMs: Date.now() - started,
           errorCode: error.code,
@@ -81,26 +96,32 @@ export async function structuredCompletion<T>(options: {
       const body = (await response.json()) as CompletionResponse;
       const content = body.choices?.[0]?.message?.content;
       if (!content)
-        throw new ProviderError("aiml", "AIML_EMPTY_OUTPUT", "AI/ML API cavab qaytarmadı.", true);
+        throw new ProviderError(
+          provider,
+          `${provider.toUpperCase()}_EMPTY_OUTPUT`,
+          "Model xidməti cavab qaytarmadı.",
+          true,
+        );
       try {
         const parsed = options.output.parse(JSON.parse(content));
         logProviderStage({
-          provider: "aiml",
+          provider,
           stage: "structured_completion",
           durationMs: Date.now() - started,
           count: 1,
         });
         return parsed;
       } catch {
+        invalidOutputs += 1;
         throw new ProviderError(
-          "aiml",
-          "AIML_INVALID_OUTPUT",
-          "AI/ML API cavabının formatı düzgün deyil.",
-          true,
+          provider,
+          `${provider.toUpperCase()}_INVALID_OUTPUT`,
+          "Model cavabının formatı düzgün deyil.",
+          invalidOutputs < 2,
         );
       }
     },
-    { attempts: 2 },
+    { attempts: provider === "gemini" ? 3 : 2, baseDelayMs: provider === "gemini" ? 1_000 : 350 },
   );
 }
 
@@ -108,6 +129,7 @@ export async function createEmbeddings(texts: string[], signal?: AbortSignal) {
   const started = Date.now();
   const config = requireIntegration("aiml");
   if (config.llmProvider === "ollama") return ollamaEmbeddings(texts, signal);
+  if (config.llmProvider === "gemini") return geminiEmbeddings(texts, signal);
   if (!config.aimlApiKey)
     throw new ProviderError("aiml", "AIML_NOT_CONFIGURED", "AI/ML API ayarları tamamlanmayıb.");
   const response = await retry(() =>

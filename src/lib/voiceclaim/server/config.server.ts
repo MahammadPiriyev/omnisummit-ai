@@ -11,7 +11,9 @@ const configSchema = z.object({
   brightDataMcpUrl: z.string().url(),
   aimlApiKey: z.string().optional(),
   aimlBaseUrl: z.string().url(),
-  llmProvider: z.enum(["aiml", "ollama"]),
+  llmProvider: z.enum(["aiml", "ollama", "gemini"]),
+  geminiApiKey: z.string().optional(),
+  geminiBaseUrl: z.string().url(),
   ollamaBaseUrl: z.string().url(),
   fastModel: z.string().min(1),
   synthesisModel: z.string().min(1),
@@ -46,16 +48,30 @@ export function getServerConfig(): ServerConfig {
     aimlApiKey: env("AIMLAPI_KEY"),
     aimlBaseUrl: env("AIMLAPI_BASE_URL") ?? "https://api.aimlapi.com/v1",
     llmProvider,
+    geminiApiKey: env("GEMINI_API_KEY"),
+    geminiBaseUrl: env("GEMINI_BASE_URL") ?? "https://generativelanguage.googleapis.com/v1beta",
     ollamaBaseUrl: env("OLLAMA_BASE_URL") ?? "http://127.0.0.1:11434",
     fastModel:
       env("VOICECLAIM_FAST_MODEL") ??
-      (llmProvider === "ollama" ? "qwen3:1.7b" : "openai/gpt-4.1-mini-2025-04-14"),
+      (llmProvider === "ollama"
+        ? "qwen3:1.7b"
+        : llmProvider === "gemini"
+          ? "gemini-3.5-flash"
+          : "openai/gpt-4.1-mini-2025-04-14"),
     synthesisModel:
       env("VOICECLAIM_SYNTHESIS_MODEL") ??
-      (llmProvider === "ollama" ? "qwen3:1.7b" : "openai/gpt-4.1-2025-04-14"),
+      (llmProvider === "ollama"
+        ? "qwen3:1.7b"
+        : llmProvider === "gemini"
+          ? "gemini-3.5-flash"
+          : "openai/gpt-4.1-2025-04-14"),
     embeddingModel:
       env("VOICECLAIM_EMBEDDING_MODEL") ??
-      (llmProvider === "ollama" ? "embeddinggemma" : "text-embedding-3-small"),
+      (llmProvider === "ollama"
+        ? "embeddinggemma"
+        : llmProvider === "gemini"
+          ? "gemini-embedding-001"
+          : "text-embedding-3-small"),
   });
   return cached;
 }
@@ -68,7 +84,11 @@ export function requireIntegration(name: "speechmatics" | "brightdata" | "aiml")
       ? config.speechmaticsApiKey
       : name === "brightdata"
         ? config.brightDataToken
-        : config.llmProvider === "ollama" || config.aimlApiKey;
-  if (!configured) throw new Error(`${name.toUpperCase()}_NOT_CONFIGURED`);
+        : config.llmProvider === "ollama" ||
+          (config.llmProvider === "gemini" ? config.geminiApiKey : config.aimlApiKey);
+  if (!configured)
+    throw new Error(
+      `${name === "aiml" && config.llmProvider === "gemini" ? "GEMINI" : name.toUpperCase()}_NOT_CONFIGURED`,
+    );
   return config;
 }

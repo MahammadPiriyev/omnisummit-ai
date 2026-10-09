@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AtomicClaim, SessionSettings } from "../types";
+import type { VerificationUpdate } from "../services/types";
 
 vi.mock("@tanstack/react-start/server-only", () => ({}));
 vi.mock("./config.server", () => ({ getServerConfig: () => ({ llmProvider: "ollama" }) }));
@@ -150,7 +151,7 @@ describe("bounded inference preserves evidence checks", () => {
 
   it("propagates provider failure rather than producing an evidence verdict", async () => {
     vi.mocked(structuredCompletion).mockRejectedValue(new Error("provider unavailable"));
-    const updates = [];
+    const updates: VerificationUpdate[] = [];
     await expect(
       (async () => {
         for await (const update of runVerification(claim, settings, "")) updates.push(update);

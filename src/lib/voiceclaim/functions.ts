@@ -222,12 +222,14 @@ export const getIntegrationHealth = createServerFn({ method: "GET" }).handler(as
       Boolean(
         config.speechmaticsApiKey &&
         config.brightDataToken &&
-        (config.llmProvider === "ollama" || config.aimlApiKey),
+        (config.llmProvider === "ollama" ||
+          (config.llmProvider === "gemini" ? config.geminiApiKey : config.aimlApiKey)),
       ),
     integrations: {
       speechmatics: Boolean(config.speechmaticsApiKey),
       brightData: Boolean(config.brightDataToken),
       aimlApi: Boolean(config.aimlApiKey),
+      gemini: Boolean(config.geminiApiKey),
       localLlm: config.llmProvider === "ollama",
     },
     llmProvider: config.llmProvider,

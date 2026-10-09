@@ -1,7 +1,30 @@
 import "@tanstack/react-start/server-only";
 import { localizedError } from "../messages";
 
-export type ProviderName = "speechmatics" | "brightdata" | "aiml" | "ollama" | "voiceclaim";
+export type ProviderName =
+  "speechmatics" | "brightdata" | "aiml" | "ollama" | "gemini" | "voiceclaim";
+
+export function classifyGeminiResponse(response: Response) {
+  const error = classifyProviderResponse("gemini", response);
+  const message =
+    response.status === 401 || response.status === 403
+      ? "Gemini API açarı və ya giriş icazəsi qəbul edilmədi. .env faylındakı GEMINI_API_KEY dəyişənini yoxlayın."
+      : response.status === 429
+        ? "Gemini sorğu limiti və ya hesab kvotası dolub. Bir qədər sonra yenidən cəhd edin və hesab limitlərini yoxlayın."
+        : response.status === 503
+          ? "Gemini modeli hazırda yüklənib və ya müvəqqəti əlçatan deyil. Bir qədər sonra yenidən cəhd edin."
+          : response.status === 404
+            ? "Seçilmiş Gemini modeli tapılmadı. .env faylındakı model adını və hesabın modelə girişini yoxlayın."
+            : error.message;
+  return new ProviderError(
+    "gemini",
+    error.code,
+    message,
+    error.retryable,
+    error.status,
+    error.retryAfterMs,
+  );
+}
 
 export class ProviderError extends Error {
   constructor(

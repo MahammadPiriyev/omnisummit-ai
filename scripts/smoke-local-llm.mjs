@@ -4,6 +4,8 @@ import { runWithStartContext } from "@tanstack/start-storage-context";
 
 // Exercise the actual running application's server functions, not mocked inference.
 const origin = process.env.VOICECLAIM_SMOKE_URL ?? "http://localhost:3000";
+const expectedProvider =
+  process.argv.find((value) => value.startsWith("--provider="))?.split("=")[1] ?? "ollama";
 const moduleResponse = await fetch(`${origin}/src/lib/voiceclaim/functions.ts`);
 assert(moduleResponse.ok, "Development server is not running");
 const source = await moduleResponse.text();
@@ -24,7 +26,11 @@ async function call(name, method, data) {
 }
 const health = await call("getIntegrationHealth", "GET");
 console.log("Active LLM provider:", health.llmProvider, "models:", health.models);
-assert.equal(health.llmProvider, "ollama", "The running app has not loaded .env; restart Vite");
+assert.equal(
+  health.llmProvider,
+  expectedProvider,
+  "The running app has not loaded .env; restart Vite",
+);
 if (process.argv.includes("--health")) process.exit(0);
 const sessionId = `local-llm-smoke-${crypto.randomUUID()}`;
 const session = await call("createAnonymousSession", "POST", { requestedSessionId: sessionId });
