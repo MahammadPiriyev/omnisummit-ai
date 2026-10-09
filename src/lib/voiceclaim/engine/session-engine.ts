@@ -116,10 +116,10 @@ export class SessionEngine {
     this.setStatus("listening");
     this.setProgress(
       "connecting",
-      this.options.source === "microphone" ? "Mikrofon qoşulur" : "Səs yazısı hazırlanır",
+      this.options.source === "microphone" ? "Connecting microphone" : "Preparing recording",
       this.options.source === "microphone"
-        ? "Səsin mətnə çevrilməsi hazırlanır"
-        : "Seçilən səs yazısı hazırlanır",
+        ? "Preparing transcription"
+        : "Preparing the selected recording",
       this.options.source === "microphone" ? undefined : 4,
     );
     this.clockTimer = setInterval(() => {
@@ -145,15 +145,15 @@ export class SessionEngine {
             if (event.status === "connected") {
               this.setProgress(
                 "transcribing",
-                "Dinlənilir",
-                "Danışıq mətnə çevrilir və faktlar yoxlanılır",
+                "Listening",
+                "Transcribing speech and checking claims",
               );
             }
             if (event.status === "reconnecting") {
               this.setProgress(
                 "connecting",
-                `Yenidən qoşulur · cəhd: ${event.attempt ?? 1}`,
-                "Bu hissənin səsi tam tanınmaya bilər",
+                `Reconnecting · attempt ${event.attempt ?? 1}`,
+                "Some speech in this segment may not be transcribed",
               );
             }
             if (event.status === "closed" && !this.finishRequested) this.setStatus("error");
@@ -184,10 +184,10 @@ export class SessionEngine {
         }
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Səsi emal etmək mümkün olmadı";
+      const message = error instanceof Error ? error.message : "Unable to process audio";
       this.setProgress(
         "error",
-        "Səsi emal etmək mümkün olmadı",
+        "Unable to process audio",
         humanizeInputError(message),
         this.session.progress?.percent,
       );
@@ -223,8 +223,8 @@ export class SessionEngine {
     this.extractionInFlight += 1;
     this.setProgress(
       "extracting",
-      "Faktlar aşkar edilir",
-      `Danışığın ${segments.length} hissəsində faktlar ayrılır`,
+      "Detecting claims",
+      `Extracting claims from ${segments.length} transcript segments`,
       this.options.source === "microphone" ? undefined : 89,
     );
     try {
@@ -250,8 +250,8 @@ export class SessionEngine {
       if (!extractedClaims.length) {
         this.setProgress(
           "transcribing",
-          this.finishRequested ? "Əlavə fakt tapılmadı" : "Yeni faktlar gözlənilir",
-          "Son cümlədə yoxlanacaq fakt tapılmadı",
+          this.finishRequested ? "No more claims found" : "Waiting for new claims",
+          "No verifiable claim found in the latest sentence",
           this.options.source === "microphone" ? undefined : 91,
         );
         return;
@@ -270,7 +270,7 @@ export class SessionEngine {
       claims.forEach((claim) => this.enqueue(claim));
     } catch (error) {
       if (!force && !semantic) this.pending = [...segments, ...this.pending];
-      const message = error instanceof Error ? error.message : "Faktları ayırmaq mümkün olmadı";
+      const message = error instanceof Error ? error.message : "Unable to extract claims";
       console.error("[voiceclaim:extraction] failed", {
         code: message.replace(/[^A-Z0-9_]/gi, "_").slice(0, 80),
         segmentCount: segments.length,
@@ -280,8 +280,8 @@ export class SessionEngine {
         this.emit({ extractionErrors: [...(this.session.extractionErrors ?? []), message] });
         this.setProgress(
           "error",
-          "Faktları ayırmaq mümkün olmadı",
-          "Danışığın mətni saxlanılıb, amma faktlar ayrıla bilmədi. Yenidən yoxlayın.",
+          "Unable to extract claims",
+          "The transcript was saved, but claims could not be extracted. Try again.",
           this.session.progress?.percent,
         );
       }
@@ -356,8 +356,8 @@ export class SessionEngine {
     this.queue.sort((a, b) => b.priority - a.priority || a.timestampMs - b.timestampMs);
     this.setProgress(
       "researching",
-      "Faktlar yoxlama növbəsindədir",
-      `${this.queue.length + this.running.size} fakt növbədədir və ya yoxlanılır`,
+      "Claims queued for verification",
+      `${this.queue.length + this.running.size} claims queued or being checked`,
       this.options.source === "microphone" ? undefined : 92,
     );
     this.pump();
@@ -390,8 +390,8 @@ export class SessionEngine {
               });
               this.setProgress(
                 "challenging",
-                "Sübutlar müqayisə edilir",
-                `${update.items.length} sübutun mənbəsi təsdiqləndi`,
+                "Comparing evidence",
+                `${update.items.length} evidence sources validated`,
                 this.options.source === "microphone" ? undefined : 96,
               );
               break;
@@ -418,7 +418,7 @@ export class SessionEngine {
       if (!controller.signal.aborted) {
         this.patchClaim(claim.id, {
           state: "VERIFICATION_ERROR",
-          error: error instanceof Error ? error.message : "Yoxlama alınmadı",
+          error: error instanceof Error ? error.message : "Verification failed",
         });
         this.updateVerificationProgress();
       }
@@ -448,16 +448,16 @@ export class SessionEngine {
           : "researching";
     const label =
       stage === "challenging"
-        ? "Əks sübutlar yoxlanılır"
+        ? "Checking counterevidence"
         : stage === "synthesizing"
-          ? "Nəticə hazırlanır"
+          ? "Preparing result"
           : remaining > 0
-            ? "Mənbələr axtarılır"
-            : "Sübutların yoxlanması bitdi";
+            ? "Searching sources"
+            : "Evidence verification complete";
     const detail =
       total > 0
-        ? `${total} faktdan ${finished} fakt yoxlanılıb · ${remaining} fakt qalıb`
-        : "Yoxlama hazırlanır";
+        ? `${finished} of ${total} claims checked · ${remaining} remaining`
+        : "Preparing verification";
     const percent =
       this.options.source === "microphone"
         ? undefined
@@ -471,8 +471,8 @@ export class SessionEngine {
     this.setStatus("processing");
     this.setProgress(
       "finalizing",
-      "Sessiya tamamlanır",
-      "Dinləmə dayandırıldı. Qalan faktlar yoxlanılır.",
+      "Finishing session",
+      "Listening stopped. Checking the remaining claims.",
       this.options.source === "microphone" ? 20 : 87,
     );
     if (this.flushTimer) clearInterval(this.flushTimer);
@@ -505,7 +505,7 @@ export class SessionEngine {
         durationMs: Date.now() - this.startedAtMs,
         progress: {
           stage: "completed",
-          label: "Sessiya tamamlandı",
+          label: "Session complete",
           detail: `${this.session.claims.length} fakt emal edildi`,
           percent: 100,
         },
@@ -536,10 +536,10 @@ export class SessionEngine {
 
 function humanizeInputError(message: string) {
   const labels: Record<string, string> = {
-    UPLOAD_FILE_MISSING: "Seçilən faylı açmaq mümkün olmadı.",
-    BATCH_TRANSCRIPTION_EMPTY: "Səs yazısında danışıq aşkarlanmadı.",
-    BATCH_TRANSCRIPTION_TIMEOUT: "Səsi mətnə çevirmək üçün ayrılan vaxt bitdi.",
-    BATCH_TRANSCRIPTION_REJECTED: "Səsi tanıma xidməti bu yazını qəbul etmədi.",
+    UPLOAD_FILE_MISSING: "Unable to open the selected file.",
+    BATCH_TRANSCRIPTION_EMPTY: "No speech was detected in the recording.",
+    BATCH_TRANSCRIPTION_TIMEOUT: "Audio transcription timed out.",
+    BATCH_TRANSCRIPTION_REJECTED: "The transcription service rejected this recording.",
   };
   return labels[message] ?? localizedError(message);
 }

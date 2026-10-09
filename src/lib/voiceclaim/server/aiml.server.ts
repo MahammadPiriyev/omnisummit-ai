@@ -26,7 +26,7 @@ export async function structuredCompletion<T>(options: {
 }) {
   options = {
     ...options,
-    system: `${options.system}\n\nWrite all user-facing text in Azerbaijani (az-AZ), using the Latin alphabet. This includes normalized claims, context, summaries, explanations, evidence gaps and recommendations. Do not answer in English or Turkish. Keep JSON keys, enum values, IDs and URLs unchanged. Search queries may use the source language. Preserve originalText and excerpt as exact source quotations; provide their Azerbaijani translations in the designated translation fields.`,
+    system: `${options.system}\n\nWrite all user-facing text in English (en-US). This includes normalized claims, context, summaries, explanations, translated evidence titles and excerpts, evidence gaps and recommendations. Translate non-English input into English while preserving its meaning, quantities, dates, scope and negation. Keep JSON keys, enum values, IDs and URLs unchanged. Search queries may use the source language. Preserve originalText and excerpt as exact source quotations; provide their English translations in the designated translation fields.`,
   };
   const config = requireIntegration("aiml");
   if (config.llmProvider === "ollama") return ollamaCompletion(options);
@@ -40,7 +40,7 @@ export async function structuredCompletion<T>(options: {
     throw new ProviderError(
       provider,
       `${provider.toUpperCase()}_NOT_CONFIGURED`,
-      "Model xidmətinin ayarları tamamlanmayıb.",
+      "The model service is not configured.",
     );
 
   let invalidOutputs = 0;
@@ -99,7 +99,7 @@ export async function structuredCompletion<T>(options: {
         throw new ProviderError(
           provider,
           `${provider.toUpperCase()}_EMPTY_OUTPUT`,
-          "Model xidməti cavab qaytarmadı.",
+          "The model service returned no response.",
           true,
         );
       try {
@@ -116,7 +116,7 @@ export async function structuredCompletion<T>(options: {
         throw new ProviderError(
           provider,
           `${provider.toUpperCase()}_INVALID_OUTPUT`,
-          "Model cavabının formatı düzgün deyil.",
+          "The model returned an invalid response format.",
           invalidOutputs < 2,
         );
       }
@@ -131,7 +131,7 @@ export async function createEmbeddings(texts: string[], signal?: AbortSignal) {
   if (config.llmProvider === "ollama") return ollamaEmbeddings(texts, signal);
   if (config.llmProvider === "gemini") return geminiEmbeddings(texts, signal);
   if (!config.aimlApiKey)
-    throw new ProviderError("aiml", "AIML_NOT_CONFIGURED", "AI/ML API ayarları tamamlanmayıb.");
+    throw new ProviderError("aiml", "AIML_NOT_CONFIGURED", "AI/ML API is not configured.");
   const response = await retry(() =>
     withDeadline(
       (deadlineSignal) =>
@@ -161,7 +161,7 @@ export async function createEmbeddings(texts: string[], signal?: AbortSignal) {
     throw new ProviderError(
       "aiml",
       "AIML_INVALID_EMBEDDINGS",
-      "Mətn vektorları sorğuya uyğun deyil.",
+      "Text embeddings do not match the request.",
     );
   }
   logProviderStage({

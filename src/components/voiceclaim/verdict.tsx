@@ -43,7 +43,7 @@ export function VerdictBadge({
           className,
         )}
       >
-        Yoxlama xətası
+        Verification error
       </span>
     );
   }

@@ -27,7 +27,7 @@ describe("AI/ML provider errors", () => {
     const error = await classifyAimlResponse(response);
     expect(error.code).toBe("AIML_HTTP_403");
     expect(error.retryable).toBe(false);
-    expect(publicError(error)).toContain("model icazələrini");
+    expect(publicError(error)).toContain("model permissions");
     expect(publicError(error)).not.toMatch(/Private request|secret-key|<html>/);
   });
 

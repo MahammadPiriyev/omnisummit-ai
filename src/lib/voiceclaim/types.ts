@@ -197,41 +197,41 @@ export const INTERVAL_SECONDS: Record<IntervalPreset, number> = {
 };
 
 export const VERDICT_LABELS: Record<Verdict, string> = {
-  supported: "Təsdiqlənir",
-  mostly_supported: "Əsasən təsdiqlənir",
-  mixed: "Qarışıq sübutlar",
-  misleading: "Yanıltıcıdır",
-  contradicted: "Təkzib edilir",
-  insufficient_evidence: "Sübut yetərsizdir",
+  supported: "Supported",
+  mostly_supported: "Mostly supported",
+  mixed: "Mixed evidence",
+  misleading: "Misleading",
+  contradicted: "Contradicted",
+  insufficient_evidence: "Insufficient evidence",
 };
 
 export const MODE_LABELS: Record<VerificationMode, string> = {
-  general: "Ümumi",
-  investor: "Biznes",
-  academic: "Elmi",
-  custom: "Öz mənbələrim",
+  general: "General",
+  investor: "Business",
+  academic: "Academic",
+  custom: "Custom sources",
 };
 
 export const SOURCE_CATEGORY_LABELS: Record<SourceCategory, string> = {
-  government: "Dövlət və rəsmi mənbə",
-  scientific: "Elmi məqalə",
-  financial_filing: "Rəsmi hesabat",
-  company: "Şirkətin rəsmi məlumatı",
-  news: "Xəbər",
-  fact_check: "Fakt yoxlama mənbəsi",
-  social: "Sosial şəbəkə",
-  custom_corpus: "Sizin sənədləriniz",
+  government: "Government or official source",
+  scientific: "Scientific paper",
+  financial_filing: "Official report",
+  company: "Company statement",
+  news: "News",
+  fact_check: "Fact-checking source",
+  social: "Social media",
+  custom_corpus: "Your documents",
 };
 
 export const CLAIM_STAGE_LABELS: Record<ClaimState, string> = {
-  DETECTED: "Fakt aşkarlandı",
-  QUEUED: "Növbədə",
-  RESEARCHING: "Mənbələr axtarılır",
-  CHALLENGING: "Əks sübutlar yoxlanılır",
-  SYNTHESIZING: "Nəticə hazırlanır",
-  COMPLETED: "Nəticə hazırdır",
-  INSUFFICIENT_EVIDENCE: "Sübut yetərsizdir",
-  VERIFICATION_ERROR: "Yoxlama xətası",
+  DETECTED: "Claim detected",
+  QUEUED: "Queued",
+  RESEARCHING: "Searching sources",
+  CHALLENGING: "Checking counterevidence",
+  SYNTHESIZING: "Preparing result",
+  COMPLETED: "Result ready",
+  INSUFFICIENT_EVIDENCE: "Insufficient evidence",
+  VERIFICATION_ERROR: "Verification error",
 };
 
 export const TERMINAL_STATES: ClaimState[] = [

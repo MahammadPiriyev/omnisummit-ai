@@ -8,10 +8,10 @@ import {
 } from "@/lib/voiceclaim/types";
 
 const CLASS_LABEL: Record<StatementClassification, string> = {
-  verifiable_fact: "Yoxlanacaq fakt",
-  opinion: "Şəxsi fikir",
-  prediction: "Proqnoz",
-  context: "Əlavə məlumat",
+  verifiable_fact: "Verifiable fact",
+  opinion: "Opinion",
+  prediction: "Prediction",
+  context: "Context",
 };
 
 const CLASS_STYLE: Record<StatementClassification, string> = {
@@ -41,7 +41,7 @@ export function TranscriptPane({
   if (segments.length === 0) {
     return (
       <p className="px-5 py-8 text-sm text-muted-foreground">
-        Danışıq gözlənilir. Tanınan sözlər burada görünəcək.
+        Waiting for speech. Transcribed words will appear here.
       </p>
     );
   }
@@ -75,7 +75,7 @@ export function TranscriptPane({
                   className="ml-auto inline-flex cursor-pointer items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground"
                 >
                   <Search className="size-3" />
-                  {claimedSegmentIds.has(segment.id) ? "Yenidən yoxla" : "Bu fikri yoxla"}
+                  {claimedSegmentIds.has(segment.id) ? "Check again" : "Verify this statement"}
                 </button>
               )}
             </div>

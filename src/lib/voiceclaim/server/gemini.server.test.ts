@@ -31,7 +31,7 @@ const options = {
   },
 };
 const validResponse = () =>
-  Response.json({ choices: [{ message: { content: '{"claim":"Gəlir 42 faiz artıb."}' } }] });
+  Response.json({ choices: [{ message: { content: '{"claim":"Revenue rose by 42%."}' } }] });
 
 describe("Gemini provider", () => {
   beforeEach(() => {
@@ -39,16 +39,16 @@ describe("Gemini provider", () => {
     config.geminiApiKey = "test-gemini-key";
   });
 
-  it("routes structured output directly to Google with the Gemini key and Azerbaijani instructions", async () => {
+  it("routes structured output directly to Google with the Gemini key and English instructions", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async () => validResponse());
-    expect(await structuredCompletion(options)).toEqual({ claim: "Gəlir 42 faiz artıb." });
+    expect(await structuredCompletion(options)).toEqual({ claim: "Revenue rose by 42%." });
     const [url, init] = fetchMock.mock.calls[0]!;
     expect(url).toBe("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions");
     expect(init?.headers).toMatchObject({ Authorization: "Bearer test-gemini-key" });
     const body = JSON.parse(init!.body as string);
     expect(body.model).toBe("gemini-3.5-flash");
     expect(body.response_format.json_schema.schema).toEqual(options.jsonSchema.schema);
-    expect(body.messages[0].content).toContain("Azerbaijani (az-AZ)");
+    expect(body.messages[0].content).toContain("English (en-US)");
     expect(body.messages[0].content).toContain("Preserve originalText and excerpt");
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -70,7 +70,7 @@ describe("Gemini provider", () => {
       .spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(Response.json({ choices: [{ message: { content: '{"claim":42}' } }] }))
       .mockResolvedValueOnce(validResponse());
-    expect(await structuredCompletion(options)).toEqual({ claim: "Gəlir 42 faiz artıb." });
+    expect(await structuredCompletion(options)).toEqual({ claim: "Revenue rose by 42%." });
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
@@ -91,14 +91,14 @@ describe("Gemini provider", () => {
       .mockResolvedValueOnce(new Response(null, { status: 503, headers: { "retry-after": "0" } }))
       .mockResolvedValueOnce(new Response(null, { status: 503, headers: { "retry-after": "0" } }))
       .mockResolvedValueOnce(validResponse());
-    expect(await structuredCompletion(options)).toEqual({ claim: "Gəlir 42 faiz artıb." });
+    expect(await structuredCompletion(options)).toEqual({ claim: "Revenue rose by 42%." });
     expect(fetchMock).toHaveBeenCalledTimes(3);
     for (const [, init] of fetchMock.mock.calls) {
       expect(JSON.parse(init!.body as string).messages[1].content).toBe(options.user);
     }
   });
 
-  it("caps persistent 503 retries and returns an Azerbaijani service error", async () => {
+  it("caps persistent 503 retries and returns an English service error", async () => {
     const fetchMock = vi
       .spyOn(globalThis, "fetch")
       .mockImplementation(
@@ -106,7 +106,7 @@ describe("Gemini provider", () => {
       );
     await expect(structuredCompletion(options)).rejects.toMatchObject({
       code: "GEMINI_HTTP_503",
-      message: expect.stringContaining("müvəqqəti əlçatan deyil"),
+      message: expect.stringContaining("temporarily unavailable"),
     });
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });

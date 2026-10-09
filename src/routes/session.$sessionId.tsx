@@ -24,15 +24,15 @@ import {
 export const Route = createFileRoute("/session/$sessionId")({
   head: () => ({
     meta: [
-      { title: "Canlı sessiya — T800" },
+      { title: "Live session — T800" },
       {
         name: "description",
-        content: "Danışığın mətnini və faktların yoxlama nəticələrini izləyin.",
+        content: "Follow the transcript and claim verification results.",
       },
-      { property: "og:title", content: "Canlı sessiya — T800" },
+      { property: "og:title", content: "Live session — T800" },
       {
         property: "og:description",
-        content: "Canlı danışıq zamanı faktların mənbələrlə yoxlanması.",
+        content: "Verify claims against sources during live speech.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -42,11 +42,11 @@ export const Route = createFileRoute("/session/$sessionId")({
 });
 
 const FILTERS: { id: ClaimFilter; label: string }[] = [
-  { id: "all", label: "Hamısı" },
-  { id: "supported", label: "Təsdiqlənir" },
-  { id: "questionable", label: "Mübahisəli" },
-  { id: "contradicted", label: "Təkzib edilir" },
-  { id: "insufficient", label: "Yetərsiz sübut" },
+  { id: "all", label: "All" },
+  { id: "supported", label: "Supported" },
+  { id: "questionable", label: "Questionable" },
+  { id: "contradicted", label: "Contradicted" },
+  { id: "insufficient", label: "Insufficient evidence" },
 ];
 
 function SessionPage() {
@@ -70,7 +70,7 @@ function SessionPage() {
       }
       const launch = takeLaunch(sessionId);
       if (!launch) {
-        toast.error("Bu sessiyanı davam etdirmək mümkün deyil. Yeni sessiya başlayın.");
+        toast.error("This session cannot be resumed. Start a new session.");
         await navigate({ to: "/" });
         return;
       }
@@ -126,11 +126,11 @@ function SessionPage() {
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">
-            {session.status === "completed" ? "Yoxlamanın nəticəsi" : "Faktların yoxlanması"}
+            {session.status === "completed" ? "Verification results" : "Claim verification"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {MODE_LABELS[session.settings.mode]} · {formatTimestamp(session.durationMs)} · {active}{" "}
-            fakt yoxlanılır
+            claims being checked
           </p>
         </div>
         {live ? (
@@ -139,7 +139,7 @@ function SessionPage() {
             onClick={() => void engineRef.current?.finish()}
           >
             <Square className="size-4" />
-            {session.status === "processing" ? "Tamamlanır…" : "Sessiyanı bitir"}
+            {session.status === "processing" ? "Finishing…" : "End session"}
           </Button>
         ) : (
           <Button variant="outline" onClick={() => void navigate({ to: "/" })}>
@@ -163,7 +163,7 @@ function SessionPage() {
               className="mt-3 h-2 w-full accent-primary"
               value={session.progress.percent}
               max={100}
-              aria-label="Yoxlamanın gedişi"
+              aria-label="Verification progress"
             />
           )}
         </div>
@@ -171,7 +171,7 @@ function SessionPage() {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
         <section className="min-w-0 space-y-4">
           <h2 className="text-lg font-semibold">
-            Nəticələr{" "}
+            Results{" "}
             <span className="text-sm font-normal text-muted-foreground">
               ({session.claims.length} fakt)
             </span>
@@ -200,9 +200,9 @@ function SessionPage() {
             <div className="editorial-card rounded-xl p-8 text-center text-sm text-muted-foreground">
               {session.claims.length === 0
                 ? live
-                  ? "Danışmağa başla. Yoxlanacaq faktlar burada görünəcək."
-                  : "Bu sessiyada yoxlanacaq fakt tapılmadı."
-                : "Bu seçimə uyğun fakt yoxdur."}
+                  ? "Start speaking. Claims to check will appear here."
+                  : "No verifiable claims were found in this session."
+                : "No claims match this filter."}
             </div>
           ) : (
             visible.map((claim) => (
@@ -218,9 +218,7 @@ function SessionPage() {
           )}
         </section>
         <details open className="editorial-card min-w-0 rounded-xl">
-          <summary className="cursor-pointer border-b px-5 py-4 font-semibold">
-            Danışığın mətni
-          </summary>
+          <summary className="cursor-pointer border-b px-5 py-4 font-semibold">Transcript</summary>
           <div className="max-h-[70vh] overflow-y-auto">
             <TranscriptPane
               segments={session.segments}

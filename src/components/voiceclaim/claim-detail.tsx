@@ -40,7 +40,7 @@ export function ClaimDetailPanel({
               <div className="flex items-center gap-3 text-[11px] tracking-[0.14em] text-muted-foreground uppercase">
                 <span className="tabular">{formatTimestamp(claim.timestampMs)}</span>
                 <span>{MODE_LABELS[claim.mode]}</span>
-                <span>{claim.depth === "deep" ? "Ətraflı yoxlama" : "Sürətli yoxlama"}</span>
+                <span>{claim.depth === "deep" ? "Deep verification" : "Quick verification"}</span>
               </div>
               <SheetTitle className="font-display text-lg leading-snug">
                 {claim.normalizedClaim}
@@ -49,7 +49,7 @@ export function ClaimDetailPanel({
             </SheetHeader>
 
             <div className="space-y-8 p-6">
-              <Section title="Deyilən fikir">
+              <Section title="Original statement">
                 <p className="rounded-lg border-l-2 border-live bg-surface p-4 text-sm leading-relaxed italic">
                   "{claim.originalText}"
                 </p>
@@ -59,7 +59,7 @@ export function ClaimDetailPanel({
                 <Section title={CLAIM_STAGE_LABELS[claim.state]}>
                   <StageRail state={claim.state} />
                   <p className="text-xs text-muted-foreground">
-                    Tapılan sübutlar burada görünür. Yekun nəticə hələ hazırlanır.
+                    Evidence appears here as it is found. The final result is still being prepared.
                   </p>
                 </Section>
               )}
@@ -68,23 +68,23 @@ export function ClaimDetailPanel({
                 <div className="flex gap-3 rounded-lg border border-verdict-error/40 bg-verdict-error/10 p-4 text-sm leading-relaxed">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-verdict-error" />
                   <div>
-                    <p className="font-semibold">Yoxlama tamamlanmadı</p>
+                    <p className="font-semibold">Verification could not complete</p>
                     <p className="mt-1 text-muted-foreground">{localizedError(claim.error)}</p>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Texniki xəta səbəbindən sübutlar üzrə nəticə çıxarılmayıb.
+                      No evidence verdict was reached because of a technical error.
                     </p>
                   </div>
                 </div>
               )}
 
               {claim.result && claim.state !== "VERIFICATION_ERROR" && (
-                <Section title="Sübutlara inam">
+                <Section title="Evidence confidence">
                   <ConfidenceMeter confidence={claim.result.confidence} />
                 </Section>
               )}
 
               {claim.evidence.some((e) => e.relation === "supports") && (
-                <Section title="Təsdiqləyən sübutlar">
+                <Section title="Supporting evidence">
                   <div className="space-y-3">
                     {claim.evidence
                       .filter((e) => e.relation === "supports")
@@ -96,7 +96,7 @@ export function ClaimDetailPanel({
               )}
 
               {claim.evidence.some((e) => e.relation === "contradicts") && (
-                <Section title="Təkzib edən sübutlar">
+                <Section title="Contradicting evidence">
                   <div className="space-y-3">
                     {claim.evidence
                       .filter((e) => e.relation === "contradicts")
@@ -108,7 +108,7 @@ export function ClaimDetailPanel({
               )}
 
               {claim.evidence.some((e) => e.relation === "contextual") && (
-                <Section title="Əlavə məlumat">
+                <Section title="Context">
                   <div className="space-y-3">
                     {claim.evidence
                       .filter((e) => e.relation === "contextual")
@@ -121,18 +121,18 @@ export function ClaimDetailPanel({
 
               {claim.result && claim.state !== "VERIFICATION_ERROR" && (
                 <>
-                  <Section title="Əks sübutların xülasəsi">
+                  <Section title="Counterevidence summary">
                     <p className="text-sm leading-relaxed text-muted-foreground">
                       {claim.result.challengeSummary}
                     </p>
                   </Section>
 
-                  <Section title="İzah">
+                  <Section title="Explanation">
                     <p className="text-sm leading-relaxed">{claim.result.explanation}</p>
                   </Section>
 
                   {claim.result.evidenceGaps.length > 0 && (
-                    <Section title="Çatışmayan məlumatlar">
+                    <Section title="Evidence gaps">
                       <ul className="space-y-2">
                         {claim.result.evidenceGaps.map((gap) => (
                           <li
@@ -148,7 +148,7 @@ export function ClaimDetailPanel({
                   )}
 
                   {claim.result.recommendedActions.length > 0 && (
-                    <Section title="Növbəti addımlar">
+                    <Section title="Next steps">
                       <ul className="space-y-2">
                         {claim.result.recommendedActions.map((action) => (
                           <li

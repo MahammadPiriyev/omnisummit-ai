@@ -35,7 +35,7 @@ export function ClaimCard({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-[11px] tracking-[0.14em] text-muted-foreground uppercase">
             <span className="tabular">{formatTimestamp(claim.timestampMs)}</span>
-            {claim.manual && <span className="text-foreground">Əllə seçilib</span>}
+            {claim.manual && <span className="text-foreground">Manually selected</span>}
             {!terminal && (
               <span className="inline-flex items-center gap-1.5 text-live">
                 <span className="size-1.5 animate-pulse rounded-full bg-live" />
@@ -58,7 +58,7 @@ export function ClaimCard({
             <StageRail state={claim.state} />
             {claim.evidence.length > 0 && (
               <p className="text-xs text-muted-foreground">
-                {claim.evidence.length} mənbə tapılıb. Yekun nəticə hələ hazırlanır.
+                {claim.evidence.length} sources found. The final result is still being prepared.
               </p>
             )}
           </div>
@@ -75,7 +75,7 @@ export function ClaimCard({
           <div className="mt-4 space-y-3">
             <div className="flex items-end justify-between gap-3 border-t pt-4">
               <span className="text-[10px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-                Sübutlara inam
+                Evidence confidence
               </span>
               <span className="tabular font-display text-2xl font-semibold">
                 {claim.result.confidence.score}
@@ -84,9 +84,9 @@ export function ClaimCard({
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">{claim.result.summary}</p>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-              <span>{supporting} təsdiqləyən mənbə</span>
-              <span>{contradicting} təkzib edən mənbə</span>
-              <span>{claim.result.roundsRun} araşdırma mərhələsi</span>
+              <span>{supporting} supporting sources</span>
+              <span>{contradicting} contradicting sources</span>
+              <span>{claim.result.roundsRun} research rounds</span>
             </div>
           </div>
         )}
@@ -99,7 +99,7 @@ export function ClaimCard({
             onClick={onRetry}
             className="cursor-pointer text-xs font-semibold text-foreground hover:underline"
           >
-            Yenidən yoxla
+            Check again
           </button>
         </div>
       )}

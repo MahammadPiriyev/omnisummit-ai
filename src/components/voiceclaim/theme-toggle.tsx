@@ -30,8 +30,8 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       className="header-icon-button"
-      aria-label={theme === "dark" ? "Açıq görünüşə keç" : "Tünd görünüşə keç"}
-      title={theme === "dark" ? "Açıq görünüşə keç" : "Tünd görünüşə keç"}
+      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
       {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </button>

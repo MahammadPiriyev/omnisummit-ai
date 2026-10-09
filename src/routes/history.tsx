@@ -11,15 +11,15 @@ import { MODE_LABELS, formatTimestamp, type Session } from "@/lib/voiceclaim/typ
 export const Route = createFileRoute("/history")({
   head: () => ({
     meta: [
-      { title: "Tarixçə — T800" },
+      { title: "History — T800" },
       {
         name: "description",
-        content: "Əvvəlki yoxlamaları və nəticələrini yenidən açın.",
+        content: "Reopen previous checks and their results.",
       },
-      { property: "og:title", content: "Tarixçə — T800" },
+      { property: "og:title", content: "History — T800" },
       {
         property: "og:description",
-        content: "Bu cihazda saxlanılan yoxlamalar və nəticələr.",
+        content: "Checks and results saved on this device.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -46,11 +46,11 @@ function HistoryPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-            Əvvəlki yoxlamalar
+            Previous checks
           </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Tarixçə</h1>
+          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">History</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Nəticələr yalnız bu brauzerdə saxlanılır.
+            Results are saved only in this browser.
           </p>
         </div>
         {sessions.length > 0 && (
@@ -61,14 +61,14 @@ function HistoryPage() {
               void localHistory.clear().then(refresh);
             }}
           >
-            <Trash2 className="size-3.5" /> Hamısını sil
+            <Trash2 className="size-3.5" /> Delete all
           </Button>
         )}
       </div>
 
       {sessions.length === 0 ? (
         <p className="mt-16 text-center text-sm text-muted-foreground">
-          Tarixçə hələ boşdur. Sessiya bitəndən sonra nəticə burada görünəcək.
+          Your history is empty. Results will appear here after a session ends.
         </p>
       ) : (
         <div className="mt-10 grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
@@ -85,7 +85,7 @@ function HistoryPage() {
                 >
                   <p className="font-display text-sm font-semibold">{session.title}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {new Date(session.startedAt).toLocaleString("az-AZ")} ·{" "}
+                    {new Date(session.startedAt).toLocaleString("en-US")} ·{" "}
                     {MODE_LABELS[session.settings.mode]} · {formatTimestamp(session.durationMs)}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">{session.claims.length} fakt</p>

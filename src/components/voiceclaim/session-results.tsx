@@ -10,13 +10,13 @@ export function SessionResults({ session }: { session: Session }) {
   return (
     <section
       className="editorial-card rounded-xl p-5"
-      aria-label="Sessiyanın nəticələri"
+      aria-label="Session results"
       aria-live="polite"
     >
-      <h2 className="font-display text-lg font-semibold">Sessiyanın nəticələri</h2>
+      <h2 className="font-display text-lg font-semibold">Session results</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        {results.length} nəticə · {failed.length} uğursuz yoxlama
-        {extractionErrors.length > 0 && ` · ${extractionErrors.length} fakt ayırma xətası`}
+        {results.length} verdicts · {failed.length} failed checks
+        {extractionErrors.length > 0 && ` · ${extractionErrors.length} claim extraction failures`}
       </p>
       {results.length > 0 && (
         <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs">
@@ -34,17 +34,19 @@ export function SessionResults({ session }: { session: Session }) {
       {(failed.length > 0 || extractionErrors.length > 0) && (
         <div className="mt-4 rounded-lg border border-verdict-error/40 bg-verdict-error/10 p-3 text-sm">
           <p className="font-semibold">
-            {results.length === 0 ? "Yoxlama tamamlanmadı" : "Bəzi yoxlamalar tamamlanmadı"}
+            {results.length === 0
+              ? "Verification could not complete"
+              : "Some checks could not complete"}
           </p>
           <p className="mt-1 text-muted-foreground">
-            Texniki xəta olan yoxlamalarda sübutlar üzrə nəticə çıxarılmayıb.
-            {failed.length > 0 && " Ətraflı məlumat üçün aşağıdakı faktı açın."}
+            Failed checks have no evidence verdict.
+            {failed.length > 0 && " Open the affected claim below for details."}
           </p>
           {extractionErrors.length > 0 && (
             <div className="mt-2">
               <p>
-                Danışığın {extractionErrors.length} hissəsində faktları ayırmaq mümkün olmadı.
-                Xidmətin xətasını aradan qaldırdıqdan sonra yeni sessiya başlayın.
+                Claims could not be extracted from {extractionErrors.length} transcript segments.
+                Start a new session after resolving the provider error.
               </p>
               {[...new Set(extractionErrors)].map((error) => (
                 <p key={error} className="mt-1 break-words text-xs">
@@ -57,28 +59,28 @@ export function SessionResults({ session }: { session: Session }) {
             /AIML_(BILLING_REQUIRED|HTTP_403)/.test(error),
           ) && (
             <p className="mt-2">
-              AI/ML API girişə icazə vermədi. Hesabın{" "}
+              AI/ML API denied access. Check your{" "}
               <a
                 href="https://aimlapi.com/app/billing/"
                 target="_blank"
                 rel="noreferrer"
                 className="font-semibold underline"
               >
-                balansını və ödəniş ayarlarını
+                account balance and billing settings
               </a>{" "}
-              yoxlayın və ya pulsuz lokal modeldən istifadə edin.
+              or use a free local model.
             </p>
           )}
         </div>
       )}
       {session.claims.length === 0 && extractionErrors.length === 0 && (
         <p className="mt-3 text-sm text-muted-foreground">
-          Bu sessiyada yoxlanacaq fakt tapılmadı.
+          No verifiable claims were found in this session.
         </p>
       )}
       {session.claims.length > 0 && (
         <p className="mt-3 text-xs text-muted-foreground">
-          Sübutları və izahı görmək üçün faktı seçin.
+          Select a claim to see its evidence and explanation.
         </p>
       )}
     </section>

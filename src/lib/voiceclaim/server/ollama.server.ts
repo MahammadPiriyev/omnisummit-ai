@@ -58,20 +58,20 @@ async function request(path: string, body: unknown, signal?: AbortSignal) {
       throw new ProviderError(
         "ollama",
         "OLLAMA_TIMEOUT",
-        "Lokal model vaxt həddini aşdı. Mənbə sayını və ya paralel yoxlamaları azaldıb yenidən cəhd edin.",
+        "The local model timed out. Reduce the source count or concurrent checks and try again.",
       );
     }
     throw new ProviderError(
       "ollama",
       "OLLAMA_UNAVAILABLE",
-      "Lokal model cavab vermədi. Ollama-nı başladın və modelin yükləndiyini yoxlayın.",
+      "The local model did not respond. Start Ollama and check that the model is loaded.",
     );
   }
   if (response.status === 404)
     throw new ProviderError(
       "ollama",
       "OLLAMA_MODEL_MISSING",
-      "Lokal model tapılmadı. Modeli ollama pull əmri ilə yükləyin.",
+      "The local model was not found. Download it using ollama pull.",
     );
   if (!response.ok) throw classifyProviderResponse("ollama", response);
   return response;
@@ -181,7 +181,7 @@ async function complete<T>(options: CompletionOptions<T>) {
         throw new ProviderError(
           "ollama",
           "OLLAMA_INVALID_OUTPUT",
-          "Lokal model etibarlı cavab vermədi. Yenidən yoxlayın və ya daha böyük model seçin.",
+          "The local model returned an invalid response. Try again or choose a larger model.",
           true,
         );
       }
@@ -217,7 +217,7 @@ export async function ollamaEmbeddings(texts: string[], signal?: AbortSignal) {
     throw new ProviderError(
       "ollama",
       "OLLAMA_INVALID_EMBEDDINGS",
-      "Lokal modelin mətn vektorları uyğun formatda deyil.",
+      "The local model returned incompatible text embeddings.",
     );
   }
   return vectors;

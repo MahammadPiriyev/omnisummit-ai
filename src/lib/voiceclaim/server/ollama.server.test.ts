@@ -49,7 +49,7 @@ describe("local LLM routing", () => {
       think: false,
       format: options.jsonSchema.schema,
     });
-    expect(body.messages[0].content).toContain("Azerbaijani (az-AZ)");
+    expect(body.messages[0].content).toContain("English (en-US)");
     expect(body.messages[0].content).toContain("Preserve originalText and excerpt");
     expect(options.system).toBe("Extract factual claims");
   });

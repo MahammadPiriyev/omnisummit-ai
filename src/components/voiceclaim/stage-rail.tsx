@@ -2,11 +2,11 @@ import { cn } from "@/lib/utils";
 import { isTerminal, type ClaimState } from "@/lib/voiceclaim/types";
 
 const STAGES: { state: ClaimState; label: string }[] = [
-  { state: "DETECTED", label: "Aşkarlandı" },
-  { state: "QUEUED", label: "Növbədə" },
-  { state: "RESEARCHING", label: "Sübutlar" },
-  { state: "CHALLENGING", label: "Müqayisə" },
-  { state: "SYNTHESIZING", label: "Nəticə" },
+  { state: "DETECTED", label: "Detected" },
+  { state: "QUEUED", label: "Queued" },
+  { state: "RESEARCHING", label: "Evidence" },
+  { state: "CHALLENGING", label: "Challenge" },
+  { state: "SYNTHESIZING", label: "Result" },
 ];
 
 export function StageRail({ state }: { state: ClaimState }) {

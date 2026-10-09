@@ -72,8 +72,8 @@ assert.equal(extraction.classification, "verifiable_fact");
 assert(extraction.claims.length > 0, "Local model did not extract the factual statement");
 assert(/Paris/i.test(extraction.claims[0].normalizedClaim));
 assert(
-  /yerləş|Paris(də|dəki)|şəhər/i.test(extraction.claims[0].normalizedClaim),
-  "Expected Azerbaijani claim output",
+  /located|is in|stands|situated/i.test(extraction.claims[0].normalizedClaim),
+  "Expected English claim output",
 );
 console.log(
   "Real local extraction passed:",
@@ -115,6 +115,18 @@ for await (const update of response) {
 }
 assert(result, "Verification finished without a result");
 assert(evidenceCount > 0, "Verification returned no accepted source evidence");
+assert(
+  !/[əƏıİğĞşŞçÇöÖüÜ]/.test(
+    [
+      result.summary,
+      result.explanation,
+      result.challengeSummary,
+      ...result.evidenceGaps,
+      ...result.recommendedActions,
+    ].join(" "),
+  ),
+  "Expected English verification output",
+);
 console.log("Real sourced verification passed:", {
   verdict: result.verdict,
   evidenceCount,

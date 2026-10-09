@@ -165,16 +165,15 @@ function extension(name: string) {
 }
 
 function validateCorpusFiles(files: File[]) {
-  if (files.length > 5) throw new Error("Ən çox 5 mənbə faylı əlavə edə bilərsiniz.");
+  if (files.length > 5) throw new Error("You can add up to 5 source files.");
   if (files.reduce((sum, file) => sum + file.size, 0) > 25 * 1024 * 1024) {
-    throw new Error("Faylların ümumi həcmi 25 MB-dan çoxdur.");
+    throw new Error("The combined file size exceeds 25 MB.");
   }
   for (const file of files) {
-    if (file.size > 10 * 1024 * 1024)
-      throw new Error(`${file.name} faylının həcmi 10 MB-dan çoxdur.`);
+    if (file.size > 10 * 1024 * 1024) throw new Error(`${file.name} exceeds 10 MB.`);
     const ext = extension(file.name);
     if (!(["pdf", "txt", "csv"] as string[]).includes(ext))
-      throw new Error(`${file.name} PDF, TXT və ya CSV formatında deyil.`);
+      throw new Error(`${file.name} is not a PDF, TXT, or CSV file.`);
     const allowedMime =
       ext === "pdf"
         ? ["application/pdf"]
@@ -182,6 +181,6 @@ function validateCorpusFiles(files: File[]) {
           ? ["text/csv", "application/csv", "text/plain", "application/vnd.ms-excel"]
           : ["text/plain"];
     if (file.type && !allowedMime.includes(file.type))
-      throw new Error(`${file.name} faylının formatı uyğun deyil.`);
+      throw new Error(`${file.name} has an unsupported format.`);
   }
 }

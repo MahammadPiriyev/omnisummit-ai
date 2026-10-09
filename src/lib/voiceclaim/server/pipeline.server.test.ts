@@ -30,7 +30,7 @@ beforeEach(() => {
 });
 
 describe("source-free verification", () => {
-  it("returns an Azerbaijani insufficient-evidence result without asking the model to invent an explanation", async () => {
+  it("returns an English insufficient-evidence result without asking the model to invent an explanation", async () => {
     const claim = {
       normalizedClaim: "Eyfel qülləsi Parisdə yerləşir.",
       originalText: "Eyfel qülləsi Parisdə yerləşir.",
@@ -42,7 +42,7 @@ describe("source-free verification", () => {
     const result = updates.find((update) => update.type === "result");
     expect(result?.type === "result" && result.result.verdict).toBe("insufficient_evidence");
     expect(result?.type === "result" && result.result.summary).toBe(
-      "Bu faktı yoxlamaq üçün uyğun sübut tapılmadı.",
+      "No suitable evidence was found to verify this claim.",
     );
     expect(structuredCompletion).toHaveBeenCalledTimes(1);
     expect(updates.some((update) => update.type === "error")).toBe(false);

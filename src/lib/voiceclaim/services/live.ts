@@ -219,8 +219,8 @@ export class LiveTranscriptionService implements TranscriptionService {
     this.handler?.({
       type: "progress",
       stage: "uploading",
-      message: "Səs yazısı yüklənir",
-      detail: "Səs yazısı mətnə çevrilmək üçün göndərilir",
+      message: "Uploading recording",
+      detail: "Sending the recording for transcription",
       percent: 12,
     });
     let auth = await this.issueBatchToken();
@@ -245,8 +245,8 @@ export class LiveTranscriptionService implements TranscriptionService {
       this.handler?.({
         type: "progress",
         stage: "transcribing",
-        message: "Səs mətnə çevrilir",
-        detail: "Səs yazısı qəbul edildi, danışıq tanınır",
+        message: "Transcribing audio",
+        detail: "Recording received. Recognizing speech.",
         percent: 32,
       });
       const pollingStarted = Date.now();
@@ -266,8 +266,8 @@ export class LiveTranscriptionService implements TranscriptionService {
         this.handler?.({
           type: "progress",
           stage: "transcribing",
-          message: "Səs mətnə çevrilir",
-          detail: `${elapsedSeconds} saniyə keçib · danışığın mətni gözlənilir`,
+          message: "Transcribing audio",
+          detail: `${elapsedSeconds} seconds elapsed · waiting for transcript`,
           percent: Math.min(76, 32 + Math.round(elapsedSeconds / 3)),
         });
         await new Promise((resolve) => setTimeout(resolve, 1_500));
@@ -276,8 +276,8 @@ export class LiveTranscriptionService implements TranscriptionService {
       this.handler?.({
         type: "progress",
         stage: "processing",
-        message: "Danışığın mətni hazırlanır",
-        detail: "Cümlələr yoxlama üçün hazırlanır",
+        message: "Preparing transcript",
+        detail: "Preparing sentences for verification",
         percent: 80,
       });
       const transcript = await client.getJobResult(jobId, "json-v2");
@@ -290,8 +290,8 @@ export class LiveTranscriptionService implements TranscriptionService {
         this.handler?.({
           type: "progress",
           stage: "cleaning_up",
-          message: "Sessiya tamamlanır",
-          detail: "Müvəqqəti səs yazısı silinir",
+          message: "Finishing session",
+          detail: "Deleting the temporary recording",
           percent: 86,
         });
         await client.deleteJob(jobId, true).catch(() => undefined);

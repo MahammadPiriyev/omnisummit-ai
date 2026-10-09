@@ -15,15 +15,15 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Yoxlama ayarları — T800" },
+      { title: "Verification settings — T800" },
       {
         name: "description",
-        content: "Yeni sessiyalar üçün yoxlama seçimlərini dəyişin.",
+        content: "Change verification options for new sessions.",
       },
-      { property: "og:title", content: "Yoxlama ayarları — T800" },
+      { property: "og:title", content: "Verification settings — T800" },
       {
         property: "og:description",
-        content: "Yoxlama növü, mövzu və mənbə sayı üçün seçimlər.",
+        content: "Options for verification depth, topic, and source count.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -98,15 +98,15 @@ function SettingsPage() {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-12 sm:px-8 sm:py-16">
       <p className="text-[11px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-        Ümumi ayarlar
+        General settings
       </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Yoxlama ayarları</h1>
+      <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Verification settings</h1>
       <p className="mt-1.5 text-sm text-muted-foreground">
-        Bu seçimlər yeni sessiyalara tətbiq olunur və bu cihazda saxlanılır.
+        These settings apply to new sessions and are saved on this device.
       </p>
 
       <div className="editorial-card mt-8 rounded-2xl px-6 sm:px-8">
-        <Row title="Mövzu" hint="Faktların hansı mənbələrdə yoxlanacağını müəyyən edir.">
+        <Row title="Topic" hint="Choose which sources to use for checking claims.">
           <Choice
             value={settings.mode}
             options={["general", "investor", "academic", "custom"] as const}
@@ -115,32 +115,32 @@ function SettingsPage() {
           />
         </Row>
 
-        <Row title="Yoxlama növü" hint="Ətraflı yoxlama daha çox mənbə və əks sübut axtarır.">
+        <Row
+          title="Verification depth"
+          hint="Deep verification searches more sources and counterevidence."
+        >
           <Choice
             value={settings.depth}
             options={["quick", "deep"] as const}
-            labels={{ quick: "Sürətli yoxlama", deep: "Ətraflı yoxlama" }}
+            labels={{ quick: "Quick verification", deep: "Deep verification" }}
             onChange={(depth) => patch({ depth })}
           />
         </Row>
 
-        <Row
-          title="Yoxlama aralığı"
-          hint="Danışıq mətninin neçə saniyədən bir yoxlanacağını seçin."
-        >
+        <Row title="Check interval" hint="Choose how often to check the transcript.">
           <Choice
             value={settings.intervalPreset}
             options={["fast", "balanced", "long"] as const}
             labels={{
-              fast: `Tez · ${INTERVAL_SECONDS.fast} san.`,
-              balanced: `Orta · ${INTERVAL_SECONDS.balanced} san.`,
-              long: `Uzun · ${INTERVAL_SECONDS.long} san.`,
+              fast: `Fast · ${INTERVAL_SECONDS.fast} sec`,
+              balanced: `Balanced · ${INTERVAL_SECONDS.balanced} sec`,
+              long: `Long · ${INTERVAL_SECONDS.long} sec`,
             }}
             onChange={(intervalPreset) => patch({ intervalPreset })}
           />
         </Row>
 
-        <Row title="Mənbə sayı" hint="Hər fakt üçün axtarılacaq mənbələrin sayı.">
+        <Row title="Source count" hint="Number of sources to look for per claim.">
           <div className="flex items-center gap-4">
             <Slider
               className="max-w-xs"
@@ -156,7 +156,10 @@ function SettingsPage() {
           </div>
         </Row>
 
-        <Row title="Eyni vaxtda yoxlanan faktlar" hint="Lokal model üçün 1 seçimi daha uyğundur.">
+        <Row
+          title="Concurrent claim checks"
+          hint="A single concurrent check is recommended for local models."
+        >
           <div className="flex items-center gap-4">
             <Slider
               className="max-w-xs"
@@ -172,18 +175,15 @@ function SettingsPage() {
           </div>
         </Row>
 
-        <Row
-          title="Saxlanılan məlumatlar"
-          hint="Sessiyalar və nəticələr yalnız bu brauzerdə saxlanılır."
-        >
+        <Row title="Saved data" hint="Sessions and results are saved only in this browser.">
           <Button
             variant="secondary"
             size="sm"
             onClick={() => {
-              void localHistory.clear().then(() => toast.success("Tarixçə silindi"));
+              void localHistory.clear().then(() => toast.success("History deleted"));
             }}
           >
-            Tarixçəni sil
+            Delete history
           </Button>
         </Row>
       </div>

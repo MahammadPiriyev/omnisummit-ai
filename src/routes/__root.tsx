@@ -21,14 +21,14 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Səhifə tapılmadı</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Bu səhifə mövcud deyil.</p>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="mt-2 text-sm text-muted-foreground">This page does not exist.</p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Ana səhifə
+            Home
           </Link>
         </div>
       </div>
@@ -47,9 +47,11 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Səhifə açılmadı</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          Unable to load page
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Xəta baş verdi. Yenidən cəhd edin və ya ana səhifəyə qayıdın.
+          Something went wrong. Try again or return to the home page.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -59,13 +61,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Yenidən cəhd et
+            Try again
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Ana səhifə
+            Home
           </a>
         </div>
       </div>
@@ -81,12 +83,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "T800" },
       {
         name: "description",
-        content: "Danışıqda səslənən faktların mənbələr əsasında yoxlanması.",
+        content: "Verify spoken claims against source evidence.",
       },
       { property: "og:title", content: "T800" },
       {
         property: "og:description",
-        content: "Danışıqda səslənən faktların mənbələr əsasında yoxlanması.",
+        content: "Verify spoken claims against source evidence.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -106,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/t800-logo.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.ico?v=t800-1", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
@@ -117,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="az" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

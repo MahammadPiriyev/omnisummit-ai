@@ -9,9 +9,9 @@ const RELATION_STYLE = {
 } as const;
 
 const RELATION_LABEL = {
-  supports: "Təsdiqləyir",
-  contradicts: "Təkzib edir",
-  contextual: "Əlavə məlumat",
+  supports: "Supports",
+  contradicts: "Contradicts",
+  contextual: "Context",
 } as const;
 
 export function EvidenceCard({ item }: { item: EvidenceItem }) {
@@ -29,12 +29,12 @@ export function EvidenceCard({ item }: { item: EvidenceItem }) {
         <span className="text-muted-foreground">{SOURCE_CATEGORY_LABELS[item.category]}</span>
         <span className="text-muted-foreground/60">·</span>
         <span className="text-muted-foreground">
-          Mənbənin etibarlılığı: {{ low: "Aşağı", medium: "Orta", high: "Yüksək" }[item.authority]}
+          Source authority: {{ low: "Low", medium: "Medium", high: "High" }[item.authority]}
         </span>
         {!item.independent && (
           <span className="inline-flex items-center gap-1 text-verdict-mixed">
             <Link2Off className="size-3" />
-            Müstəqil mənbə deyil
+            Not an independent source
           </span>
         )}
       </div>
@@ -47,7 +47,7 @@ export function EvidenceCard({ item }: { item: EvidenceItem }) {
       </p>
       {item.translatedExcerpt && (
         <details className="mt-2 text-xs text-muted-foreground">
-          <summary className="cursor-pointer">Mənbədəki orijinal mətn</summary>
+          <summary className="cursor-pointer">Original source text</summary>
           <p className="mt-2">{item.title}</p>
           <blockquote className="mt-1">{item.excerpt}</blockquote>
         </details>
@@ -63,9 +63,9 @@ export function EvidenceCard({ item }: { item: EvidenceItem }) {
           {item.domain}
           <ExternalLink className="size-3" />
         </a>
-        {item.publishedAt && <span>Dərc edilib: {item.publishedAt}</span>}
-        <span>Əldə edilib: {new Date(item.retrievedAt).toLocaleTimeString("az-AZ")}</span>
-        {item.upstreamOf && <span>Təkrar mənbə: {item.upstreamOf}</span>}
+        {item.publishedAt && <span>Published: {item.publishedAt}</span>}
+        <span>Retrieved: {new Date(item.retrievedAt).toLocaleTimeString("en-US")}</span>
+        {item.upstreamOf && <span>Upstream source: {item.upstreamOf}</span>}
       </div>
     </article>
   );

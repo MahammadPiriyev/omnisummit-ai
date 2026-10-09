@@ -8,7 +8,11 @@ import { logProviderStage } from "./logging.server";
 export async function geminiEmbeddings(texts: string[], signal?: AbortSignal) {
   const config = requireIntegration("aiml");
   if (!config.geminiApiKey)
-    throw new ProviderError("gemini", "GEMINI_NOT_CONFIGURED", "Gemini API açarı əlavə edilməyib.");
+    throw new ProviderError(
+      "gemini",
+      "GEMINI_NOT_CONFIGURED",
+      "The Gemini API key has not been added.",
+    );
   if (!texts.length) return [];
   const started = Date.now();
   const model = config.embeddingModel.replace(/^models\//, "");
@@ -46,7 +50,7 @@ export async function geminiEmbeddings(texts: string[], signal?: AbortSignal) {
       throw new ProviderError(
         "gemini",
         "GEMINI_INVALID_EMBEDDINGS",
-        "Gemini mətn vektorlarını uyğun formatda qaytarmadı.",
+        "Gemini returned incompatible text embeddings.",
       );
     return values;
   });

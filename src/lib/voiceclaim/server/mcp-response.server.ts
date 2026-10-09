@@ -55,7 +55,7 @@ function emptyResponse() {
   return new ProviderError(
     "brightdata",
     "BRIGHTDATA_EMPTY_STREAM",
-    "Mənbə xidməti sorğuya uyğun cavab qaytarmadı.",
+    "The source service returned no matching response.",
     true,
   );
 }

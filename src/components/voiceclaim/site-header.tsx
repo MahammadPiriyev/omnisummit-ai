@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "./theme-toggle";
 const NAV = [
-  { to: "/", label: "Yoxla" },
-  { to: "/history", label: "Tarixçə" },
-  { to: "/settings", label: "Ayarlar" },
+  { to: "/", label: "Verify" },
+  { to: "/history", label: "History" },
+  { to: "/settings", label: "Settings" },
 ] as const;
 export function SiteHeader() {
   return (
@@ -19,7 +19,7 @@ export function SiteHeader() {
           />
           T800
         </Link>
-        <nav aria-label="Əsas menyu" className="flex gap-1">
+        <nav aria-label="Main navigation" className="flex gap-1">
           {NAV.map((item) => (
             <Link
               key={item.to}

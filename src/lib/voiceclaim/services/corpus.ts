@@ -77,7 +77,7 @@ export class IndexedDbEvidenceCorpusService implements EvidenceCorpusService {
       } catch (error) {
         await assetRepository.updateSource(asset.id, {
           parserStatus: "error",
-          indexingError: error instanceof Error ? error.message : "Faylı emal etmək mümkün olmadı",
+          indexingError: error instanceof Error ? error.message : "Unable to process the file",
         });
       }
     }
@@ -119,21 +119,21 @@ export class IndexedDbEvidenceCorpusService implements EvidenceCorpusService {
 async function parseAsset(asset: StoredAsset): Promise<SourceText[]> {
   const kind = asset.source?.kind;
   if (kind === "txt")
-    return [{ text: (await asset.file.text()).slice(0, 1_000_000), provenance: "mətn" }];
+    return [{ text: (await asset.file.text()).slice(0, 1_000_000), provenance: "text" }];
   if (kind === "csv") {
     const parsed = Papa.parse<string[]>(await asset.file.text(), { skipEmptyLines: true });
     if (parsed.errors.length)
-      throw new Error(parsed.errors[0]?.message ?? "CSV faylını oxumaq mümkün olmadı");
+      throw new Error(parsed.errors[0]?.message ?? "Unable to read the CSV file");
     return parsed.data.map((row, index) => ({
       text: row.join(" | "),
-      provenance: `sətir ${index + 1}`,
+      provenance: `row ${index + 1}`,
     }));
   }
   if (kind === "pdf") {
     const signature = new TextDecoder().decode(
       new Uint8Array(await asset.file.slice(0, 5).arrayBuffer()),
     );
-    if (signature !== "%PDF-") throw new Error("PDF faylı etibarlı deyil");
+    if (signature !== "%PDF-") throw new Error("Invalid PDF file");
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
     pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
     const document = await pdfjs.getDocument({
@@ -148,11 +148,11 @@ async function parseAsset(asset: StoredAsset): Promise<SourceText[]> {
         .join(" ")
         .replace(/\s+/g, " ")
         .trim();
-      pages.push({ text, provenance: `səhifə ${pageNumber}` });
+      pages.push({ text, provenance: `page ${pageNumber}` });
     }
     return pages;
   }
-  throw new Error("Bu fayl növü dəstəklənmir");
+  throw new Error("This file type is not supported");
 }
 
 function chunkSection(section: SourceText) {

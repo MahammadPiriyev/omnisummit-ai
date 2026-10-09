@@ -8,13 +8,13 @@ export function classifyGeminiResponse(response: Response) {
   const error = classifyProviderResponse("gemini", response);
   const message =
     response.status === 401 || response.status === 403
-      ? "Gemini API açarı və ya giriş icazəsi qəbul edilmədi. .env faylındakı GEMINI_API_KEY dəyişənini yoxlayın."
+      ? "Gemini rejected the API key or access permissions. Check GEMINI_API_KEY in your .env file."
       : response.status === 429
-        ? "Gemini sorğu limiti və ya hesab kvotası dolub. Bir qədər sonra yenidən cəhd edin və hesab limitlərini yoxlayın."
+        ? "Gemini rate limit or account quota exceeded. Try again later and check your account limits."
         : response.status === 503
-          ? "Gemini modeli hazırda yüklənib və ya müvəqqəti əlçatan deyil. Bir qədər sonra yenidən cəhd edin."
+          ? "The Gemini model is overloaded or temporarily unavailable. Please try again shortly."
           : response.status === 404
-            ? "Seçilmiş Gemini modeli tapılmadı. .env faylındakı model adını və hesabın modelə girişini yoxlayın."
+            ? "The selected Gemini model was not found. Check the model name in .env and your account access."
             : error.message;
   return new ProviderError(
     "gemini",
@@ -51,7 +51,7 @@ export function classifyProviderResponse(provider: ProviderName, response: Respo
   return new ProviderError(
     provider,
     `${provider.toUpperCase()}_HTTP_${response.status}`,
-    `${provider} xidmətinə sorğu alınmadı (${response.status}).`,
+    `${provider} request failed (${response.status}).`,
     retryable,
     response.status,
     retryAfterMs,
@@ -64,7 +64,7 @@ export async function classifyAimlResponse(response: Response) {
     return new ProviderError(
       "aiml",
       error.code,
-      "AI/ML API açarı qəbul edilmədi. .env faylındakı AIMLAPI_KEY dəyişənini yoxlayın.",
+      "AI/ML API rejected the API key. Check AIMLAPI_KEY in your .env file.",
       false,
       response.status,
     );
@@ -87,7 +87,7 @@ export async function classifyAimlResponse(response: Response) {
     return new ProviderError(
       "aiml",
       "AIML_BILLING_REQUIRED",
-      "AI/ML API balans və ya ödəniş səbəbindən sorğunu rədd etdi. https://aimlapi.com/app/billing/ səhifəsində hesabınızı yoxlayın.",
+      "AI/ML API blocked the request because of account credits or billing. Check your account at https://aimlapi.com/app/billing/.",
       false,
       response.status,
     );
@@ -95,7 +95,7 @@ export async function classifyAimlResponse(response: Response) {
   return new ProviderError(
     "aiml",
     error.code,
-    "AI/ML API girişə icazə vermədi. Hesabın balansını, açarı və model icazələrini yoxlayın.",
+    "AI/ML API denied access. Check your account balance, API key, and model permissions.",
     false,
     response.status,
   );
@@ -105,5 +105,5 @@ export function publicError(error: unknown) {
   if (error instanceof ProviderError) return `${error.code}: ${localizedError(error.message)}`;
   if (error instanceof Error && /NOT_CONFIGURED/.test(error.message))
     return `${error.message}: ${localizedError(error.message)}`;
-  return "VERIFICATION_ERROR: Yoxlama tamamlanmadı.";
+  return "VERIFICATION_ERROR: Verification could not complete.";
 }

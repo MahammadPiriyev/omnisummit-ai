@@ -1,9 +1,9 @@
 export function renderErrorPage(): string {
   return `<!doctype html>
-<html lang="az">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Səhifə açılmadı</title>
+    <title>Unable to load page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
@@ -18,11 +18,11 @@ export function renderErrorPage(): string {
   </head>
   <body>
     <div class="card">
-      <h1>Səhifə açılmadı</h1>
-      <p>Xəta baş verdi. Yenidən cəhd edin və ya ana səhifəyə qayıdın.</p>
+      <h1>Unable to load page</h1>
+      <p>Something went wrong. Try again or return to the home page.</p>
       <div class="actions">
-        <button class="primary" onclick="location.reload()">Yenidən cəhd et</button>
-        <a class="secondary" href="/">Ana səhifə</a>
+        <button class="primary" onclick="location.reload()">Try again</button>
+        <a class="secondary" href="/">Home</a>
       </div>
     </div>
   </body>

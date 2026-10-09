@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import type { EvidenceConfidence, QualitativeLevel } from "@/lib/voiceclaim/types";
 
 const LEVEL_LABEL: Record<QualitativeLevel, string> = {
-  low: "Aşağı",
-  medium: "Orta",
-  high: "Yüksək",
+  low: "Low",
+  medium: "Medium",
+  high: "High",
 };
 
 const LEVEL_WIDTH: Record<QualitativeLevel, string> = {
@@ -54,11 +54,12 @@ export function ConfidenceMeter({
       <div className="flex items-end justify-between gap-3">
         <div>
           <div className="text-[11px] tracking-[0.14em] text-muted-foreground uppercase">
-            Sübutlara inam
+            Evidence confidence
           </div>
           {!compact && (
             <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-              Bu göstərici tapılan sübutlara əsaslanır. Faktın doğru olma ehtimalını göstərmir.
+              This score reflects the available evidence. It is not the probability that the claim
+              is true.
             </p>
           )}
         </div>
@@ -68,9 +69,9 @@ export function ConfidenceMeter({
         </div>
       </div>
       <div className={cn("grid gap-3", compact ? "grid-cols-3" : "grid-cols-1 sm:grid-cols-3")}>
-        <Dimension label="Sübutun gücü" level={confidence.evidenceStrength} />
-        <Dimension label="Ziddiyyət" level={confidence.contradiction} invert />
-        <Dimension label="Aktuallıq" level={confidence.freshness} />
+        <Dimension label="Evidence strength" level={confidence.evidenceStrength} />
+        <Dimension label="Contradiction" level={confidence.contradiction} invert />
+        <Dimension label="Freshness" level={confidence.freshness} />
       </div>
     </div>
   );
