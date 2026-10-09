@@ -11,12 +11,12 @@ import { MODE_LABELS, formatTimestamp, type Session } from "@/lib/voiceclaim/typ
 export const Route = createFileRoute("/history")({
   head: () => ({
     meta: [
-      { title: "Tarixçə — Fakt Yoxla" },
+      { title: "Tarixçə — T800" },
       {
         name: "description",
         content: "Əvvəlki yoxlamaları və nəticələrini yenidən açın.",
       },
-      { property: "og:title", content: "Tarixçə — Fakt Yoxla" },
+      { property: "og:title", content: "Tarixçə — T800" },
       {
         property: "og:description",
         content: "Bu cihazda saxlanılan yoxlamalar və nəticələr.",

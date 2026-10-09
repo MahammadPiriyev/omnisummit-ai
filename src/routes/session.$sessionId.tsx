@@ -24,12 +24,12 @@ import {
 export const Route = createFileRoute("/session/$sessionId")({
   head: () => ({
     meta: [
-      { title: "Canlı sessiya — Fakt Yoxla" },
+      { title: "Canlı sessiya — T800" },
       {
         name: "description",
         content: "Danışığın mətnini və faktların yoxlama nəticələrini izləyin.",
       },
-      { property: "og:title", content: "Canlı sessiya — Fakt Yoxla" },
+      { property: "og:title", content: "Canlı sessiya — T800" },
       {
         property: "og:description",
         content: "Canlı danışıq zamanı faktların mənbələrlə yoxlanması.",

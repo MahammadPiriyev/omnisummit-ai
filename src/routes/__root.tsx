@@ -78,12 +78,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fakt Yoxla" },
+      { title: "T800" },
       {
         name: "description",
         content: "Danışıqda səslənən faktların mənbələr əsasında yoxlanması.",
       },
-      { property: "og:title", content: "Fakt Yoxla" },
+      { property: "og:title", content: "T800" },
       {
         property: "og:description",
         content: "Danışıqda səslənən faktların mənbələr əsasında yoxlanması.",
@@ -106,7 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/t800-logo.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,

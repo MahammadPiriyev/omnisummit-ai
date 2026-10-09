@@ -27,14 +27,14 @@ import { localizedError } from "@/lib/voiceclaim/messages";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Fakt Yoxla — Deyilən faktların yoxlanması" },
+      { title: "T800 — Deyilən faktların yoxlanması" },
       {
         name: "description",
         content: "Danışıqda səslənən faktları etibarlı mənbələrlə yoxlayın.",
       },
       {
         property: "og:title",
-        content: "Fakt Yoxla — Deyilən faktların yoxlanması",
+        content: "T800 — Deyilən faktların yoxlanması",
       },
       {
         property: "og:description",

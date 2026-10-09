@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 const NAV = [
   { to: "/", label: "Yoxla" },
@@ -11,8 +10,14 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
       <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <Link to="/" className="mr-auto flex items-center gap-2 text-base font-semibold">
-          <ShieldCheck className="size-6 text-primary" />
-          Fakt Yoxla
+          <img
+            src="/t800-logo.png"
+            alt=""
+            width={40}
+            height={40}
+            className="size-10 shrink-0 rounded-lg"
+          />
+          T800
         </Link>
         <nav aria-label="Əsas menyu" className="flex gap-1">
           {NAV.map((item) => (

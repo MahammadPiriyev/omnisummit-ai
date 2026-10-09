@@ -15,12 +15,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Yoxlama ayarları — Fakt Yoxla" },
+      { title: "Yoxlama ayarları — T800" },
       {
         name: "description",
         content: "Yeni sessiyalar üçün yoxlama seçimlərini dəyişin.",
       },
-      { property: "og:title", content: "Yoxlama ayarları — Fakt Yoxla" },
+      { property: "og:title", content: "Yoxlama ayarları — T800" },
       {
         property: "og:description",
         content: "Yoxlama növü, mövzu və mənbə sayı üçün seçimlər.",
