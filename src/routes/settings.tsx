@@ -15,12 +15,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Verification settings — T800" },
+      { title: "Verification settings — Proofy" },
       {
         name: "description",
         content: "Change verification options for new sessions.",
       },
-      { property: "og:title", content: "Verification settings — T800" },
+      { property: "og:title", content: "Verification settings — Proofy" },
       {
         property: "og:description",
         content: "Options for verification depth, topic, and source count.",

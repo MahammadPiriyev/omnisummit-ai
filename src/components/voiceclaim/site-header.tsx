@@ -17,7 +17,7 @@ export function SiteHeader() {
             height={40}
             className="size-10 shrink-0 rounded-lg"
           />
-          T800
+          Proofy
         </Link>
         <nav aria-label="Main navigation" className="flex gap-1">
           {NAV.map((item) => (

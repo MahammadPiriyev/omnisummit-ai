@@ -11,12 +11,12 @@ import { MODE_LABELS, formatTimestamp, type Session } from "@/lib/voiceclaim/typ
 export const Route = createFileRoute("/history")({
   head: () => ({
     meta: [
-      { title: "History — T800" },
+      { title: "History — Proofy" },
       {
         name: "description",
         content: "Reopen previous checks and their results.",
       },
-      { property: "og:title", content: "History — T800" },
+      { property: "og:title", content: "History — Proofy" },
       {
         property: "og:description",
         content: "Checks and results saved on this device.",

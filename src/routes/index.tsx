@@ -27,14 +27,14 @@ import { localizedError } from "@/lib/voiceclaim/messages";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "T800 — Verify spoken claims" },
+      { title: "Proofy — Verify spoken claims" },
       {
         name: "description",
         content: "Check spoken claims against reliable sources.",
       },
       {
         property: "og:title",
-        content: "T800 — Verify spoken claims",
+        content: "Proofy — Verify spoken claims",
       },
       {
         property: "og:description",

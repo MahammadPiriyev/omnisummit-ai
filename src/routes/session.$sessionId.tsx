@@ -24,12 +24,12 @@ import {
 export const Route = createFileRoute("/session/$sessionId")({
   head: () => ({
     meta: [
-      { title: "Live session — T800" },
+      { title: "Live session — Proofy" },
       {
         name: "description",
         content: "Follow the transcript and claim verification results.",
       },
-      { property: "og:title", content: "Live session — T800" },
+      { property: "og:title", content: "Live session — Proofy" },
       {
         property: "og:description",
         content: "Verify claims against sources during live speech.",
